@@ -1,0 +1,30 @@
+{
+  "name": "ko-rx",
+  "version": "1.0.0",
+  "description": "Utility for converting between ko.observable and Rx.Observable",
+  "main": "ko-Rx.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "keywords": [
+    "knockout",
+    "rx",
+    "observable",
+    "subscribable",
+    "computed",
+    "utility"
+  ],
+  "author": "Lucas Azzola <derflatulator@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jsdom": "^9.1.0",
+    "knockout": "^3.4.0",
+    "mocha": "^2.4.5",
+    "rx": "^4.1.0",
+    "sinon": "^1.17.4"
+  },
+  "engines": {
+    "node": ">4.0.0"
+  }
+}
