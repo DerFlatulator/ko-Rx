@@ -17,7 +17,7 @@ This utility expects you to pass a reference to Knockout's `ko` and RxJS's `Rx`.
 
 To add methods to relevant prototypes, call (once):
 ```js
-koRx(ko, rx, { extend: true });
+koRx(ko, Rx, { extend: true });
 ```
 
 ### Knockout to Rx
