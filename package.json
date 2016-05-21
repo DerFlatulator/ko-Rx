@@ -1,6 +1,6 @@
 {
   "name": "ko-rx",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Utility for converting between ko.observable and Rx.Observable",
   "main": "ko-Rx.js",
   "scripts": {
