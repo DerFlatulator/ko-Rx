@@ -1,21 +1,18 @@
+var isInBrowser = !(typeof require === 'function');
 
-var expect = require('chai').expect;
-var sinon = require('sinon');
-var jsdom = require('jsdom');
+if (!isInBrowser) {
+    var expect = require('chai').expect;
+    var sinon = require('sinon');
+    var jsdom = require('jsdom');
+    var koRx = require('../ko-Rx');
 
-var fs = require('fs');
-var path = require('path');
+    var Rx = require('rx');
+    var ko = require('knockout');
+}
 
-var koRx = require('./ko-Rx');
+console.log('Environment:', isInBrowser ? 'PhantomJS' : 'Node.js');
 
-describe('koRx', function () {
-    var Rx, ko;
-
-    beforeEach(function () {
-        Rx = require('rx');
-        ko = require('knockout');
-    });
-
+describe('ko-Rx', function () {
     it('does not mutate objects by default', function () {
         koRx(ko, Rx);
         expect(ko.subscribable.fn.toRxObservable).to.be.undefined;
@@ -184,16 +181,22 @@ describe('koRx', function () {
             rxSubject.subscribe(spyNext, spyError, spyCompleted);
         });
 
-        testInJsDom = function (html, fn) {
-            jsdom.env({ 
-                html: html, 
-                src: [], 
-                done: function (err, window) {
-                    expect(err).to.be.falsy;
-                    fn(window.document, ko);
-                    window.close();
-                }
-            });
+        testInDom = function (html, fn) {
+            if (isInBrowser) {
+                document.getElementById('__test__').innerHTML = html;
+                fn(document);
+            } else {
+                jsdom.env({
+                    html: html,
+                    src: [],
+                    done: function (err, window) {
+                        expect(err).to.be.falsy;
+                        fn(window.document);
+                        window.close();
+                    }
+                });
+                
+            }
         };
         
         dispatchEvent = function (document, event, element) {
@@ -210,7 +213,7 @@ describe('koRx', function () {
         });
         
         it('binds successfully and gets initial value', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" value="0" data-bind="rx: {first: true, observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -222,7 +225,7 @@ describe('koRx', function () {
         });
 
         it('gets changed values on event firing', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" value="0" data-bind="rx: {observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -236,7 +239,7 @@ describe('koRx', function () {
         });
 
         it('can call onError', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" value="0" data-bind="rx: {first: true, method: \'onError\', observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -248,7 +251,7 @@ describe('koRx', function () {
         });
 
         it('can call onCompleted', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" value="0" data-bind="rx: {first: true, method: \'onCompleted\', observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -260,7 +263,7 @@ describe('koRx', function () {
         });
 
         it('calls onNext when observables changes', function (done) {
-            testInJsDom(
+            testInDom(
                 '<span id="test" data-bind="text: observable(), rx: {track: observable, prop: \'textContent\', observer: rxSubject}"></span>', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -279,7 +282,7 @@ describe('koRx', function () {
         });
 
         it('can get attributes from the DOM', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" data-bind=" rx: {first: true, attr: \'type\', observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -291,7 +294,7 @@ describe('koRx', function () {
         });
 
         it('can get data-attributes from the DOM', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" data-test="foo" data-bind=" rx: {first: true, attr: \'data-test\', observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -303,7 +306,7 @@ describe('koRx', function () {
         });
 
         it('can get properties from the element', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" data-bind="rx: {first: true, prop: \'_testProp\', observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -316,7 +319,7 @@ describe('koRx', function () {
         });
 
         it('does not call onCompleted on disposal by default', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" data-bind="rx: {observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');
@@ -330,7 +333,7 @@ describe('koRx', function () {
         });
 
         it('can call onCompleted on disposal', function (done) {
-            testInJsDom(
+            testInDom(
                 '<input id="test" type="text" data-bind="rx: {completeOnDisposal: true, observer: rxSubject}" />', 
                 function (doc) {
                     var inputField = doc.getElementById('test');

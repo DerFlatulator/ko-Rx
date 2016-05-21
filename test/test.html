@@ -1,0 +1,27 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Tests</title>
+  <link href="lib-links/mocha.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="mocha"></div>
+  <div id="__test__"></div>
+
+  <script src="lib-links/chai.js"></script>
+  <script>var expect = chai.expect;</script>
+  <script src="lib-links/mocha.js"></script>
+  <script src="lib-links/sinon.js"></script>
+  
+  <script src="lib-links/knockout.js"></script>
+  <script src="lib-links/rx.all.js"></script>
+  <script src="lib-links/ko-Rx.js"></script>
+  
+  <script>mocha.setup('bdd')</script>
+  <script src="test.js"></script>
+  <script>
+    mocha.checkLeaks();
+    mocha.run();
+  </script>
+</body>
+</html>

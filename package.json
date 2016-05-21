@@ -4,7 +4,7 @@
   "description": "Utility for converting between ko.observable and Rx.Observable",
   "main": "ko-Rx.js",
   "scripts": {
-    "test": "mocha test.js"
+    "test": "mocha test/test.js && mocha-phantomjs test/test.html"
   },
   "keywords": [
     "knockout",
@@ -23,6 +23,7 @@
     "jsdom": "^9.1.0",
     "knockout": "^3.4.0",
     "mocha": "^2.4.5",
+    "mocha-phantomjs": "^4.0.2",
     "rx": "^4.1.0",
     "sinon": "^1.17.4"
   },
