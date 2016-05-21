@@ -4,7 +4,7 @@
 # ko-Rx
 ## A utility for converting between ko.observable and Rx.Observable.
 
-This package serves as a bridge between two libraries: [Knockout JS](knockoutjs.com) and [RxJS](https://github.com/Reactive-Extensions/RxJS/). 
+This package serves as a bridge between two libraries: [Knockout JS](http://knockoutjs.com) and [RxJS](https://github.com/Reactive-Extensions/RxJS/). 
 
 It offers:
 * Conversion from  `ko.subscribable` (e.g.: `ko.observable`, `ko.computed`, `ko.pureComputed`) to `Rx.Observable`.
