@@ -1,17 +1,5 @@
-// Begin UMD
-(function (root, exportName, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        module.exports = factory();
-    } else {
-        // Browser globals (root is window)
-        root[exportName] = factory();
-    }
+(function (root, exportName, factory) { 
+    if (typeof define === 'function' && define.amd) define([], factory); else if (typeof module === 'object' && module.exports) module.exports = factory(); else root[exportName] = factory(); 
 }(this, 'koRx', function () {
 
     var koRx = function (ko, Rx, options) {
@@ -135,6 +123,4 @@
     }
 
     return koRx;
-
-// End UMD
 }));

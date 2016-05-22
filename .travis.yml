@@ -2,3 +2,7 @@ language: node_js
 node_js:
   - "5"
   - "4"
+script:
+  - npm run test-phantom
+  - npm run test-node
+  - npm run coverage

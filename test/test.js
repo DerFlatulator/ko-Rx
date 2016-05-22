@@ -1,6 +1,6 @@
-var isInBrowser = !(typeof require === 'function');
+var hasRequire = typeof require === 'function';
 
-if (!isInBrowser) {
+if (hasRequire) {
     var expect = require('chai').expect;
     var sinon = require('sinon');
     var jsdom = require('jsdom');
@@ -10,9 +10,7 @@ if (!isInBrowser) {
     var ko = require('knockout');
 }
 
-console.log('Environment:', isInBrowser ? 'PhantomJS' : 'Node.js');
-
-describe('ko-Rx', function () {
+describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), function () {
     it('does not mutate objects by default', function () {
         koRx(ko, Rx);
         expect(ko.subscribable.fn.toRxObservable).to.be.undefined;
@@ -182,7 +180,7 @@ describe('ko-Rx', function () {
         });
 
         testInDom = function (html, fn) {
-            if (isInBrowser) {
+            if (!hasRequire) {
                 document.getElementById('__test__').innerHTML = html;
                 fn(document);
             } else {

@@ -4,7 +4,10 @@
   "description": "Utility for converting between ko.observable and Rx.Observable",
   "main": "ko-Rx.js",
   "scripts": {
-    "test": "mocha test/test.js && mocha-phantomjs test/test.html"
+    "test": "npm run test-phantom",
+    "test-node": "mocha test/test.js",
+    "test-phantom": "mocha-phantomjs test/test.html",
+    "coverage": "NODE_ENV=test mocha test/test.js --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
     "knockout",
@@ -14,15 +17,23 @@
     "computed",
     "utility"
   ],
+  "config": {
+    "blanket": {
+        "pattern": "ko-Rx.js"
+    }
+  },
   "author": "Lucas Azzola <derflatulator@gmail.com>",
   "repository": "DerFlatulator/ko-Rx",
   "bugs": "https://github.com/DerFlatulator/ko-rx/issues",
   "license": "MIT",
   "devDependencies": {
+    "blanket": "^1.2.3",
     "chai": "^3.5.0",
+    "coveralls": "^2.11.9",
     "jsdom": "^9.1.0",
     "knockout": "^3.4.0",
     "mocha": "^2.4.5",
+    "mocha-lcov-reporter": "^1.2.0",
     "mocha-phantomjs": "^4.0.2",
     "rx": "^4.1.0",
     "sinon": "^1.17.4"
