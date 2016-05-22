@@ -60,9 +60,9 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             var spy = sinon.spy();
             var subscription = rxObservable.subscribe(spy);
             koObservable(1);
-            expect(spy.calledWith(1)).to.be.true;
+            sinon.assert.calledWith(spy, 1);
             koObservable(2);
-            expect(spy.calledWith(2)).to.be.true;
+            sinon.assert.calledWith(spy, 2);
         });
 
         it('stops receiving values after disposal', function () {
@@ -70,24 +70,24 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             var spy = sinon.spy();
             var subscription = rxObservable.subscribe(spy);
             koObservable(1);
-            expect(spy.calledWith(1)).to.be.true;
+            sinon.assert.calledWith(spy, 1);
             subscription.dispose();
             koObservable(2);
-            expect(spy.calledWith(2)).to.be.false;
+            sinon.assert.neverCalledWith(spy, 2);
         });
         
         it('does not receive first value by default', function () {
             var rxObservable = koObservable.toRxObservable();
             var spy = sinon.spy();
             var subscription = rxObservable.subscribe(spy);
-            expect(spy.calledWith(0)).to.be.false; 
+            sinon.assert.neverCalledWith(spy, 2);
         });
 
         it('receives first value when asked', function () {
             var rxObservable = koObservable.toRxObservable(true);
             var spy = sinon.spy();
             var subscription = rxObservable.subscribe(spy);
-            expect(spy.calledWith(0)).to.be.true;
+            sinon.assert.calledWith(spy, 0);
         });
 
         it('converts ko.computed into Rx.Observable', function () {
@@ -110,7 +110,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             var spyCompleted = sinon.spy();
             rxObservable.subscribe(function () {}, function () {}, spyCompleted);
             koComputed.dispose();
-            expect(spyCompleted.called).to.be.true;
+            sinon.assert.called(spyCompleted);
         });
     });
     
@@ -148,11 +148,11 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             expect(ko.isSubscribable(koComputed)).to.be.true;
             var spy = sinon.spy();
             var subscription = koComputed.subscribe(spy);
-            expect(spy.called).to.be.false;
+            sinon.assert.notCalled(spy);
             rxSubject.onNext(0);
-            expect(spy.calledWith(0)).to.be.true;
+            sinon.assert.calledWith(spy, 0);
             rxSubject.onNext(1);
-            expect(spy.calledWith(1)).to.be.true;
+            sinon.assert.calledWith(spy, 1);
         });
 
         it('stops receiving after computed disposal', function () {
@@ -161,10 +161,10 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             var spy = sinon.spy();
             var subscription = koComputed.subscribe(spy);
             rxSubject.onNext(0);
-            expect(spy.calledWith(0)).to.be.true;
+            sinon.assert.calledWith(spy, 0);
             koComputed.dispose();
             rxSubject.onNext(1);
-            expect(spy.calledWith(1)).to.be.false;
+            sinon.assert.neverCalledWith(spy, 1);
         });
         
         it('stops receiving after computed subscription disposal', function () {
@@ -173,10 +173,10 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             var spy = sinon.spy();
             var subscription = koComputed.subscribe(spy);
             rxSubject.onNext(0);
-            expect(spy.calledWith(0)).to.be.true;
+            sinon.assert.calledWith(spy, 0);
             subscription.dispose();
             rxSubject.onNext(1);
-            expect(spy.calledWith(1)).to.be.false;
+            sinon.assert.neverCalledWith(spy, 1);
         });
 
         it('stops receiving after onCompleted', function () {
@@ -185,10 +185,10 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             var spy = sinon.spy();
             var subscription = koComputed.subscribe(spy);
             rxSubject.onNext(0);
-            expect(spy.calledWith(0)).to.be.true;
+            sinon.assert.calledWith(spy, 0);
             rxSubject.onCompleted();
             rxSubject.onNext(1);
-            expect(spy.calledWith(1)).to.be.false;
+            sinon.assert.neverCalledWith(spy, 1);
         });
     });
     
@@ -206,7 +206,9 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
 
         testInDom = function (html, fn) {
             if (!hasRequire) {
-                document.getElementById('__test__').innerHTML = html;
+                var root = document.getElementById('__test__');
+                expect(root).to.exist;
+                root.innerHTML = html;
                 fn(document);
             } else {
                 jsdom.env({
@@ -241,7 +243,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                 function (doc) {
                     var inputField = doc.getElementById('test');
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
-                    expect(spyNext.calledWith('0')).to.be.true;
+                    sinon.assert.calledWith(spyNext, '0');
                     done();
                 }
             );
@@ -255,7 +257,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
                     inputField.value = '1';
                     dispatchEvent(doc, 'change', inputField);
-                    expect(spyNext.calledWith('1')).to.be.true;
+                    sinon.assert.calledWith(spyNext, '1');
                     done();
                 }
             );
@@ -267,7 +269,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                 function (doc) {
                     var inputField = doc.getElementById('test');
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
-                    expect(spyError.called).to.be.true;
+                    sinon.assert.calledOnce(spyError);
                     done();
                 }
             );
@@ -279,7 +281,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                 function (doc) {
                     var inputField = doc.getElementById('test');
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
-                    expect(spyCompleted.called).to.be.true;
+                    sinon.assert.calledOnce(spyCompleted);
                     done();
                 }
             );
@@ -297,8 +299,8 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                     }, inputField);
                     observable('1');
                     observable('2');
-                    expect(spyNext.calledWith('1')).to.be.true;
-                    expect(spyNext.calledWith('2')).to.be.true;
+                    sinon.assert.calledWith(spyNext, '1');
+                    sinon.assert.calledWith(spyNext, '2');
                     done();
                 }
             );
@@ -310,7 +312,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                 function (doc) {
                     var inputField = doc.getElementById('test');
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
-                    expect(spyNext.calledWith('text')).to.be.true;
+                    sinon.assert.calledWith(spyNext, 'text');
                     done();
                 }
             );
@@ -322,7 +324,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                 function (doc) {
                     var inputField = doc.getElementById('test');
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
-                    expect(spyNext.calledWith('foo')).to.be.true;
+                    sinon.assert.calledWith(spyNext, 'foo');
                     done();
                 }
             );
@@ -335,7 +337,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                     var inputField = doc.getElementById('test');
                     inputField._testProp = 'foo';
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
-                    expect(spyNext.calledWith('foo')).to.be.true;
+                    sinon.assert.calledWith(spyNext, 'foo');
                     done();
                 }
             );
@@ -349,7 +351,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                     inputField._testProp = 'foo';
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
                     ko.cleanNode(inputField);
-                    expect(spyCompleted.called).to.be.false;
+                    sinon.assert.notCalled(spyCompleted);
                     done();
                 }
             );
@@ -363,7 +365,7 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
                     inputField._testProp = 'foo';
                     ko.applyBindings({ rxSubject: rxSubject }, inputField);
                     ko.cleanNode(inputField);
-                    expect(spyCompleted.called).to.be.true;
+                    sinon.assert.called(spyCompleted);
                     done();
                 }
             );
