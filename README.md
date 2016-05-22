@@ -176,16 +176,16 @@ var rxObservable = koRxFns.toRxObservable.call(someKoObservable, true);
 ko.bindingHandlers.rx = koRxFns.rxBinding;
 ```
 
-## Compatability
+## Compatibility
 
 Written in plain ECMAScript 5, safe to load in the browser without any transformation.
 
 ## Tests
 
-Fully unit tested with mocha, chai, sinon and jsdom. Run with: 
+Fully unit tested with mocha, chai, sinon. Run with: 
 
 ```
-$ npm run test-node     # to test in Node.JS
+$ npm run test-node     # to test in Node.JS/jsdom
 $ npm run test-phantom  # to test in PhantomJS
 ```
 
