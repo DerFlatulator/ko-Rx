@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/DerFlatulator/ko-Rx.svg?branch=master)](https://travis-ci.org/DerFlatulator/ko-Rx)
 [![npm version](https://badge.fury.io/js/ko-rx.svg)](https://badge.fury.io/js/ko-rx)
+[![Coverage Status](https://coveralls.io/repos/github/DerFlatulator/ko-Rx/badge.svg?branch=master)](https://coveralls.io/github/DerFlatulator/ko-Rx?branch=master)
 
 # ko-Rx
 ## A utility for converting between ko.observable and Rx.Observable.
