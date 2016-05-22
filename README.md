@@ -135,7 +135,7 @@ Tracking a knockout observable:
 ```
 
 ```js
-var inputField = doc.getElementById('test');
+var inputField = doc.getElementById('demo3');
 var observable = ko.observable('initial (ignored, `first` is not true)');
 var subject = new Rx.Subject;
 ko.applyBindings({ 
