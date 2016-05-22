@@ -1,0 +1,13 @@
+{
+  "name": "ko-rx",
+  "version": false,
+  "dependencies": {},
+  "ambientDependencies": {
+    "chai": "registry:dt/chai#3.4.0+20160317120654",
+    "jsdom": "registry:dt/jsdom#2.0.0+20160316155526",
+    "knockout": "registry:dt/knockout#0.0.0+20160428162840",
+    "mocha": "registry:dt/mocha#2.2.5+20160317120654",
+    "rx": "registry:dt/rx#0.0.0+20160317120654",
+    "sinon": "registry:dt/sinon#1.16.0+20160517064723"
+  }
+}
