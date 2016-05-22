@@ -80,7 +80,7 @@ var rxObservable = Rx.Observable.interval(100, function () {
 var viewModel = {
     readOnlyComputed: rxObservable.toKnockoutComputed()
 };
-ko.applyBindings(viewModel, document.getElementById('demo'));
+ko.applyBindings(viewModel, document.getElementById('demo1'));
 ```
 
 ```html
