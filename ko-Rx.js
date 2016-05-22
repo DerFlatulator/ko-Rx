@@ -68,7 +68,7 @@
             var dispose = computed.dispose;
             computed.dispose = function () {
                 rxDisposable.dispose();
-                dispose.apply(rxObservable, arguments);
+                dispose.apply(computed, arguments);
             };
 
             return computed;

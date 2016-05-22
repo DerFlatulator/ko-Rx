@@ -99,6 +99,19 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             var rxObservable = koComputed.toRxObservable();
             expect(Rx.Observable.isObservable(rxObservable)).to.be.true;
         });
+
+        it('calls onCompleted on Rx.Observable when underlying ko.computed is disposed', function () {
+            var koComputed = ko.computed({
+                read: function () {
+                    return koObservable();
+                }
+            });
+            var rxObservable = koComputed.toRxObservable();
+            var spyCompleted = sinon.spy();
+            rxObservable.subscribe(function () {}, function () {}, spyCompleted);
+            koComputed.dispose();
+            expect(spyCompleted.called).to.be.true;
+        });
     });
     
     describe('Rx.Observable to ko.computed', function () {
@@ -142,7 +155,19 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
             expect(spy.calledWith(1)).to.be.true;
         });
 
-        it('stops receiving after subscription disposal', function () {
+        it('stops receiving after computed disposal', function () {
+            var koComputed = rxSubject.toKnockoutComputed();
+            expect(ko.isSubscribable(koComputed)).to.be.true;
+            var spy = sinon.spy();
+            var subscription = koComputed.subscribe(spy);
+            rxSubject.onNext(0);
+            expect(spy.calledWith(0)).to.be.true;
+            koComputed.dispose();
+            rxSubject.onNext(1);
+            expect(spy.calledWith(1)).to.be.false;
+        });
+        
+        it('stops receiving after computed subscription disposal', function () {
             var koComputed = rxSubject.toKnockoutComputed();
             expect(ko.isSubscribable(koComputed)).to.be.true;
             var spy = sinon.spy();

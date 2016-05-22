@@ -177,10 +177,11 @@ Written in plain ECMAScript 5, safe to load in the browser without any transform
 
 ## Tests
 
-Fully unit tested with mocha, chai and jsdom. Run with: 
+Fully unit tested with mocha, chai, sinon and jsdom. Run with: 
 
 ```
-$ npm test
+$ npm run test-node     # to test in Node.JS
+$ npm run test-phantom  # to test in PhantomJS
 ```
 
 ## License
