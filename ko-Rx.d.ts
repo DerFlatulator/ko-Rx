@@ -7,12 +7,17 @@ interface KnockoutBindingHandlers {
     rx: KnockoutBindingHandler;
 }
 
+interface ToKnockoutComputedOptions {
+    forwardOnError?: boolean;
+    forwardOnCompleted?: boolean;
+}
+
 declare namespace Rx {
     interface DisposableStatic {
         fromKnockout<T>(subscribable: KnockoutSubscribable<T>): Observable<T>;
     }
   
     interface Disposable<T> {
-        toKnockoutComputed(): KnockoutComputed<T>;
+        toKnockoutComputed(options?: ToKnockoutComputedOptions): KnockoutComputed<T>;
     }
 }

@@ -115,11 +115,12 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
     });
     
     describe('Rx.Observable to ko.computed', function () {
-        var rxSubject;
+        var rxSubject, spy;
         
         beforeEach(function () {
             koRx(ko, Rx, { extend: true });
             rxSubject = new Rx.Subject;
+            spy = sinon.spy();
         });
 
         afterEach(function () {
@@ -146,22 +147,19 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
         it('receives new values', function () {
             var koComputed = rxSubject.toKnockoutComputed();
             expect(ko.isSubscribable(koComputed)).to.be.true;
-            var spy = sinon.spy();
             var subscription = koComputed.subscribe(spy);
             sinon.assert.notCalled(spy);
             rxSubject.onNext(0);
             sinon.assert.calledWith(spy, 0);
             rxSubject.onNext(1);
             sinon.assert.calledWith(spy, 1);
+            expect(koComputed._koRxDisposed).to.be.falsy;
         });
 
         it('stops receiving after computed disposal', function () {
             var koComputed = rxSubject.toKnockoutComputed();
             expect(ko.isSubscribable(koComputed)).to.be.true;
-            var spy = sinon.spy();
             var subscription = koComputed.subscribe(spy);
-            rxSubject.onNext(0);
-            sinon.assert.calledWith(spy, 0);
             koComputed.dispose();
             rxSubject.onNext(1);
             sinon.assert.neverCalledWith(spy, 1);
@@ -170,25 +168,49 @@ describe('ko-Rx - environment: ' + (hasRequire ? 'NodeJS' : 'PhantomJS'), functi
         it('stops receiving after computed subscription disposal', function () {
             var koComputed = rxSubject.toKnockoutComputed();
             expect(ko.isSubscribable(koComputed)).to.be.true;
-            var spy = sinon.spy();
             var subscription = koComputed.subscribe(spy);
-            rxSubject.onNext(0);
-            sinon.assert.calledWith(spy, 0);
             subscription.dispose();
             rxSubject.onNext(1);
             sinon.assert.neverCalledWith(spy, 1);
+            expect(koComputed._koRxDisposed).to.be.falsy;
         });
 
         it('stops receiving after onCompleted', function () {
             var koComputed = rxSubject.toKnockoutComputed();
             expect(ko.isSubscribable(koComputed)).to.be.true;
-            var spy = sinon.spy();
             var subscription = koComputed.subscribe(spy);
-            rxSubject.onNext(0);
-            sinon.assert.calledWith(spy, 0);
             rxSubject.onCompleted();
             rxSubject.onNext(1);
             sinon.assert.neverCalledWith(spy, 1);
+            expect(koComputed._koRxDisposed).to.be.truthy;
+        });
+        
+        it('stops receiving after onError', function () {
+            var koComputed = rxSubject.toKnockoutComputed();
+            expect(ko.isSubscribable(koComputed)).to.be.true;
+            var subscription = koComputed.subscribe(spy);
+            rxSubject.onError('error');
+            rxSubject.onNext(1);
+            sinon.assert.neverCalledWith(spy, 1);
+            expect(koComputed._koRxDisposed).to.be.truthy;
+        });
+
+        it('forwards error from onError to ko.computed when requested', function () {
+            var koComputed = rxSubject.toKnockoutComputed({ forwardOnError: true });
+            expect(ko.isSubscribable(koComputed)).to.be.true;
+            var subscription = koComputed.subscribe(spy);
+            rxSubject.onError('error');
+            sinon.assert.calledWith(spy, { error: 'error' });
+            expect(koComputed._koRxDisposed).to.be.truthy;
+        });
+        
+        it('forwards from onCompleted to ko.computed when requested', function () {
+            var koComputed = rxSubject.toKnockoutComputed({ forwardOnCompleted: true });
+            expect(ko.isSubscribable(koComputed)).to.be.true;
+            var subscription = koComputed.subscribe(spy);
+            rxSubject.onCompleted();
+            sinon.assert.calledWith(spy, { completed: true });
+            expect(koComputed._koRxDisposed).to.be.truthy;
         });
     });
     

@@ -48,7 +48,9 @@
         /**
          * Rx.Observable to ko.computed
          */
-        koRx.toKnockoutComputed = function toKnockoutComputed() {
+        koRx.toKnockoutComputed = function toKnockoutComputed(options) {
+            if (!options) options = {};
+            
             var rxObservable = this;
             var koObservable = ko.observable();
             var rxDisposable = new Rx.SingleAssignmentDisposable;
@@ -58,7 +60,21 @@
                     // subscribing to any ko observables that happen to 
                     // get evaluated during our call to this.subscribe().
                     ko.computed(function () {
-                        var rxSubscription = rxObservable.subscribe(koObservable);
+                        var rxSubscription = rxObservable.subscribe(
+                            koObservable, 
+                            function onError(error) {
+                                if (options.forwardOnError) {
+                                    koObservable({ error: error });
+                                }
+                                computed.dispose();
+                            },
+                            function onCompleted() {
+                                if (options.forwardOnCompleted) {
+                                    koObservable({ completed: true });
+                                }
+                                computed.dispose();
+                            }
+                        );
                         rxDisposable.setDisposable(rxSubscription);
                     }).dispose();
                 }
@@ -67,6 +83,7 @@
             
             var dispose = computed.dispose;
             computed.dispose = function () {
+                computed._koRxDisposed = true;
                 rxDisposable.dispose();
                 dispose.apply(computed, arguments);
             };

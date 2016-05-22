@@ -65,7 +65,11 @@ To convert from an `Rx.Observable`, simply call `toKnockoutComputed()`. This is 
 
 #### Parameters
 
-* None! Since Rx Observables are usually cold, there is no "first value" to read.
+Since Rx Observables are usually cold, there is no "first value" to read.
+
+* `options` - Object:
+  - options.forwardOnError` - Default: `false`. If `true`, an error sent to the observable will be passed to the computed under the `error` property.
+  - options.forwardOnCompleted` - Default: `false`. If `true`, when the observable's `onCompleted` is called, `true` will be passed to the computed under the `completed` property.
 
 #### Example
 
