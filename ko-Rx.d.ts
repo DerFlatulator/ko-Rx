@@ -21,3 +21,13 @@ declare namespace Rx {
         toKnockoutComputed(options?: ToKnockoutComputedOptions): KnockoutComputed<T>;
     }
 }
+
+declare var koRx: {
+    (ko: KnockoutStatic, Rx: any, options?: {
+        extend: boolean,
+    }): {
+        toRxObservable(startWithCurrentValue?: boolean): Rx.Observable<any>;
+        toKnockoutComputed(options?: ToKnockoutComputedOptions): KnockoutComputed<any>;
+        rxBinding: KnockoutBindingHandler;
+    };
+}
