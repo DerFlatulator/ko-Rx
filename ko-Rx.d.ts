@@ -13,11 +13,11 @@ interface ToKnockoutComputedOptions {
 }
 
 declare namespace Rx {
-    interface DisposableStatic {
+    interface ObservableStatic {
         fromKnockout<T>(subscribable: KnockoutSubscribable<T>): Observable<T>;
     }
   
-    interface Disposable<T> {
+    interface Observable<T> {
         toKnockoutComputed(options?: ToKnockoutComputedOptions): KnockoutComputed<T>;
     }
 }
